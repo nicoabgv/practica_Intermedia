@@ -1,0 +1,26 @@
+### Registro de Usuario
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+    "email": "nico2@email.com",
+    "password": "12345678"
+}
+
+### Validación del Email
+PUT http://localhost:3000/api/users/validate-email
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDE3MDA1NDc3YjYzOGIzNGJhN2I3ZSIsImlhdCI6MTc0MTc3ODk0OSwiZXhwIjoxNzQxNzgyNTQ5fQ.jqu2XP2Z1Eq3co7TTkGmGQd_5Sc01tqbCl5WbDG3X_4
+
+{
+    "code": "662043"
+}
+
+### Login de Usuario
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+    "email": "nico2@email.com",
+    "password": "12345678"
+}
