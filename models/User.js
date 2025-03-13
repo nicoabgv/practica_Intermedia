@@ -34,7 +34,8 @@ const userSchema = new mongoose.Schema({
     name: { type: String },
     cif: { type: String },
     address: { type: String }
-  }
+  },
+  isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

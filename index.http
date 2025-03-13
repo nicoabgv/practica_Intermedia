@@ -46,3 +46,26 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDE3MDA1N
     "cif": "B12345678",
     "address": "Calle Principal 123"
 }
+
+### Subida de Logo en Local
+POST http://localhost:3000/api/storage/local
+Content-Type: multipart/form-data; boundary=boundary123
+
+--boundary123
+Content-Disposition: form-data; name="image"; filename="logo.png"
+Content-Type: image/png
+
+< ./full_logo_blc.png
+--boundary123--
+
+### Obtener Perfil del Usuario
+GET http://localhost:3000/api/users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDE3MDA1NDc3YjYzOGIzNGJhN2I3ZSIsImlhdCI6MTc0MTg2NzA2MywiZXhwIjoxNzQxODcwNjYzfQ.ZsQRrFCoDJVGrfOILTWPR0Zy7NUGVrJrgGZdE4d01SU
+
+### Eliminar Usuario (Hard Delete)
+DELETE http://localhost:3000/api/users/delete?type=hard
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDE3MDA1NDc3YjYzOGIzNGJhN2I3ZSIsImlhdCI6MTc0MTg2NzA2MywiZXhwIjoxNzQxODcwNjYzfQ.ZsQRrFCoDJVGrfOILTWPR0Zy7NUGVrJrgGZdE4d01SU
+
+### Eliminar Usuario (Soft Delete)
+DELETE http://localhost:3000/api/users/delete?type=soft
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDE3MDA1NDc3YjYzOGIzNGJhN2I3ZSIsImlhdCI6MTc0MTg2NzA2MywiZXhwIjoxNzQxODcwNjYzfQ.ZsQRrFCoDJVGrfOILTWPR0Zy7NUGVrJrgGZdE4d01SU

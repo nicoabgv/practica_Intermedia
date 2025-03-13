@@ -172,3 +172,57 @@ exports.updateCompanyInfo = async (req, res) => {
       res.status(401).json({ error: 'Token inválido o expirado' });
   }
 };
+
+exports.getUserProfile = async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ error: 'Token no proporcionado' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id).select('-password -verificationCode');
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        res.status(200).json({
+            message: 'Perfil obtenido correctamente',
+            user
+        });
+    } catch (error) {
+        res.status(401).json({ error: 'Token inválido o expirado' });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    const { type } = req.query;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Token no proporcionado' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        if (type === 'hard') {
+            await User.findByIdAndDelete(decoded.id);
+            return res.status(200).json({ message: 'Usuario eliminado permanentemente' });
+        }
+
+        user.isActive = false;
+        await user.save();
+
+        res.status(200).json({ message: 'Usuario marcado como inactivo (Soft delete)' });
+    } catch (error) {
+        res.status(401).json({ error: 'Token inválido o expirado' });
+    }
+};
