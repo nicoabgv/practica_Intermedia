@@ -24,6 +24,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'user',
     enum: ['user', 'admin', 'guest']
+  },
+  personalInfo: {
+    name: { type: String },
+    lastName: { type: String },
+    nif: { type: String }
+  },
+  companyInfo: {
+    name: { type: String },
+    cif: { type: String },
+    address: { type: String }
   }
 }, { timestamps: true });
 

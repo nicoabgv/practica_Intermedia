@@ -24,3 +24,25 @@ Content-Type: application/json
     "email": "nico2@email.com",
     "password": "12345678"
 }
+
+### Onboarding (Datos Personales)
+PUT http://localhost:3000/api/users/onboarding/personal-info
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDE3MDA1NDc3YjYzOGIzNGJhN2I3ZSIsImlhdCI6MTc0MTg2NzA2MywiZXhwIjoxNzQxODcwNjYzfQ.ZsQRrFCoDJVGrfOILTWPR0Zy7NUGVrJrgGZdE4d01SU
+
+{
+    "name": "Juan",
+    "lastName": "Pérez",
+    "nif": "12345678X"
+}
+
+### Onboarding (Datos de la Compañía)
+PUT http://localhost:3000/api/users/onboarding/company-info
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDE3MDA1NDc3YjYzOGIzNGJhN2I3ZSIsImlhdCI6MTc0MTg2NzA2MywiZXhwIjoxNzQxODcwNjYzfQ.ZsQRrFCoDJVGrfOILTWPR0Zy7NUGVrJrgGZdE4d01SU
+
+{
+    "name": "Empresa Ejemplo",
+    "cif": "B12345678",
+    "address": "Calle Principal 123"
+}
