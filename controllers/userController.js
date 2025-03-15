@@ -226,3 +226,120 @@ exports.deleteUser = async (req, res) => {
         res.status(401).json({ error: 'Token inválido o expirado' });
     }
 };
+
+exports.requestPasswordReset = async (req, res) => {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    user.resetCode = resetCode;
+    user.resetCodeExpires = Date.now() + 3600000;
+    await user.save();
+
+    res.status(200).json({
+        message: 'Código de recuperación generado correctamente',
+        resetCode
+    });
+};
+
+exports.resetPassword = async (req, res) => {
+    const { email, code, password } = req.body;
+
+    const user = await User.findOne({
+        email,
+        resetCode: code,
+        resetCodeExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        return res.status(400).json({ error: 'Código inválido o expirado' });
+    }
+
+    if (!password || password.length < 8) {
+        return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    user.resetCode = undefined;
+    user.resetCodeExpires = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: 'Contraseña restablecida correctamente' });
+};
+
+exports.inviteUser = async (req, res) => {
+    const { email } = req.body;
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ error: 'Token no proporcionado' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const sender = await User.findById(decoded.id);
+
+        if (!sender) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(409).json({ error: 'El usuario ya está registrado' });
+        }
+
+        const inviteToken = jwt.sign(
+            { email, role: 'guest' },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        res.status(200).json({
+            message: 'Invitación generada correctamente',
+            inviteToken
+        });
+
+    } catch (error) {
+        res.status(401).json({ error: 'Token inválido o expirado' });
+    }
+};
+
+exports.registerInvitedUser = async (req, res) => {
+    const { token, password } = req.body;
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const existingUser = await User.findOne({ email: decoded.email });
+        if (existingUser) {
+            return res.status(409).json({ error: 'El usuario ya está registrado' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = await User.create({
+            email: decoded.email,
+            password: hashedPassword,
+            role: decoded.role,
+            isVerified: true,
+            verificationCode: "INVITED_USER"
+        });
+
+        res.status(201).json({
+            message: 'Usuario registrado correctamente',
+            user: {
+                email: newUser.email,
+                role: newUser.role
+            }
+        });
+
+    } catch (error) {
+        res.status(400).json({ error: 'Token de invitación inválido o expirado' });
+    }
+};

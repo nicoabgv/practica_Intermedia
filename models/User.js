@@ -16,9 +16,9 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  verificationCode: {
-    type: String,
-    required: true
+  verificationCode: { 
+    type: String, 
+    required: function() { return !this.isVerified; } 
   },
   role: {
     type: String,
@@ -35,6 +35,8 @@ const userSchema = new mongoose.Schema({
     cif: { type: String },
     address: { type: String }
   },
+  resetCode: { type: String },
+  resetCodeExpires: { type: Date },
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
