@@ -14,6 +14,7 @@ exports.registerUser = async (req, res) => {
     return res.status(409).json({ error: 'El email ya está registrado' });
   }
 
+  // Código de verificación aleatorio para confirmar correo de 6 cifras
   const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,6 +27,7 @@ exports.registerUser = async (req, res) => {
 
   await newUser.save();
 
+  // Token para validar el correo, o simplemente mantener sesión inicial
   const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
   res.status(201).json({
@@ -152,6 +154,7 @@ exports.updateCompanyInfo = async (req, res) => {
           return res.status(404).json({ error: 'Usuario no encontrado' });
       }
 
+      // Si el usuario es "invitado", se rellena automáticamente con sus datos personales
       if (user.role === 'guest') {
           user.companyInfo = {
               name: user.personalInfo.name,
@@ -182,6 +185,8 @@ exports.getUserProfile = async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Excluimos contraseña y código de verificación del resultado
         const user = await User.findById(decoded.id).select('-password -verificationCode');
 
         if (!user) {
@@ -214,10 +219,12 @@ exports.deleteUser = async (req, res) => {
         }
 
         if (type === 'hard') {
+            // Eliminación definitiva
             await User.findByIdAndDelete(decoded.id);
             return res.status(200).json({ message: 'Usuario eliminado permanentemente' });
         }
 
+        // Soft delete
         user.isActive = false;
         await user.save();
 
@@ -235,6 +242,7 @@ exports.requestPasswordReset = async (req, res) => {
         return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
+    // Código temporal con duración de 1h de 6 cifras
     const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
     user.resetCode = resetCode;
     user.resetCodeExpires = Date.now() + 3600000;
@@ -294,6 +302,7 @@ exports.inviteUser = async (req, res) => {
             return res.status(409).json({ error: 'El usuario ya está registrado' });
         }
 
+        // Token de invitación con rol "guest" y duración de 24h
         const inviteToken = jwt.sign(
             { email, role: 'guest' },
             process.env.JWT_SECRET,
@@ -328,7 +337,7 @@ exports.registerInvitedUser = async (req, res) => {
             password: hashedPassword,
             role: decoded.role,
             isVerified: true,
-            verificationCode: "INVITED_USER"
+            verificationCode: "INVITED_USER" // Para no tener que verificar por correo otra vez
         });
 
         res.status(201).json({

@@ -9,7 +9,7 @@ const createItem = async (req, res) => {
 
     const fileData = {
         filename: file.filename,
-        url: `/storage/${file.filename}`
+        url: `/storage/${file.filename}` // Ruta para servir el archivo desde el front
     };
 
     const data = await storageModel.create(fileData);

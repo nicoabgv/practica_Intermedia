@@ -1,4 +1,5 @@
 ### Registro de Usuario
+# Probado y funcionando
 POST http://localhost:3000/api/users/register
 Content-Type: application/json
 
@@ -8,15 +9,17 @@ Content-Type: application/json
 }
 
 ### Validación del Email
+# Probado y funcionando
 PUT http://localhost:3000/api/users/validate-email
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDVkYWYxMWQ4OWY1ODZmYjE4OGNkYSIsImlhdCI6MTc0MjA2ODQ2NSwiZXhwIjoxNzQyMDcyMDY1fQ.LCr9pwZ-gU5lkGPnX7Rw565duZegRj_xCmwk7azvvIM
+Authorization: Bearer <token>
 
 {
     "code": "931562"
 }
 
 ### Login de Usuario
+# Probado y funcionando
 POST http://localhost:3000/api/users/login
 Content-Type: application/json
 
@@ -26,9 +29,10 @@ Content-Type: application/json
 }
 
 ### Onboarding (Datos Personales)
+# Probado y funcionando
 PUT http://localhost:3000/api/users/onboarding/personal-info
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDVkYWYxMWQ4OWY1ODZmYjE4OGNkYSIsImlhdCI6MTc0MjA2ODQ2NSwiZXhwIjoxNzQyMDcyMDY1fQ.LCr9pwZ-gU5lkGPnX7Rw565duZegRj_xCmwk7azvvIM
+Authorization: Bearer <token>
 
 {
     "name": "Juan",
@@ -37,9 +41,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDVkYWYxM
 }
 
 ### Onboarding (Datos de la Compañía)
+# Probado y funcionando
 PUT http://localhost:3000/api/users/onboarding/company-info
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDVkYWYxMWQ4OWY1ODZmYjE4OGNkYSIsImlhdCI6MTc0MjA2ODQ2NSwiZXhwIjoxNzQyMDcyMDY1fQ.LCr9pwZ-gU5lkGPnX7Rw565duZegRj_xCmwk7azvvIM
+Authorization: Bearer <token>
 
 {
     "name": "Empresa Ejemplo",
@@ -48,6 +53,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDVkYWYxM
 }
 
 ### Subida de Logo en Local
+# Probado y funcionando
 POST http://localhost:3000/api/storage/local
 Content-Type: multipart/form-data; boundary=boundary123
 
@@ -59,18 +65,22 @@ Content-Type: image/png
 --boundary123--
 
 ### Obtener Perfil del Usuario
+# Probado y funcionando
 GET http://localhost:3000/api/users/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDE3MDA1NDc3YjYzOGIzNGJhN2I3ZSIsImlhdCI6MTc0MTg2NzA2MywiZXhwIjoxNzQxODcwNjYzfQ.ZsQRrFCoDJVGrfOILTWPR0Zy7NUGVrJrgGZdE4d01SU
+Authorization: Bearer <token>
 
 ### Eliminar Usuario (Hard Delete)
+# Probado y funcionando
 DELETE http://localhost:3000/api/users/delete?type=hard
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDE3MDA1NDc3YjYzOGIzNGJhN2I3ZSIsImlhdCI6MTc0MTg2NzA2MywiZXhwIjoxNzQxODcwNjYzfQ.ZsQRrFCoDJVGrfOILTWPR0Zy7NUGVrJrgGZdE4d01SU
+Authorization: Bearer <token>
 
 ### Eliminar Usuario (Soft Delete)
+# Probado y funcionando
 DELETE http://localhost:3000/api/users/delete?type=soft
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDE3MDA1NDc3YjYzOGIzNGJhN2I3ZSIsImlhdCI6MTc0MTg2NzA2MywiZXhwIjoxNzQxODcwNjYzfQ.ZsQRrFCoDJVGrfOILTWPR0Zy7NUGVrJrgGZdE4d01SU
+Authorization: Bearer <token>
 
 ### Solicitar recuperación de contraseña
+# Probado y funcionando
 POST http://localhost:3000/api/users/request-password-reset
 Content-Type: application/json
 
@@ -79,6 +89,7 @@ Content-Type: application/json
 }
 
 ### Restablecer contraseña
+# Probado y funcionando
 POST http://localhost:3000/api/users/reset-password
 Content-Type: application/json
 
@@ -89,19 +100,21 @@ Content-Type: application/json
 }
 
 ### Invitar a un compañero
+# Probado y funcionando
 POST http://localhost:3000/api/users/invite
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDVkYWYxMWQ4OWY1ODZmYjE4OGNkYSIsImlhdCI6MTc0MjA2ODQ2NSwiZXhwIjoxNzQyMDcyMDY1fQ.LCr9pwZ-gU5lkGPnX7Rw565duZegRj_xCmwk7azvvIM
+Authorization: Bearer <token>
 
 {
     "email": "nuevo-invitado@email.com"
 }
 
 ### Registro del invitado
+# Probado y funcionando
 POST http://localhost:3000/api/users/register-invited
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im51ZXZvLWludml0YWRvQGVtYWlsLmNvbSIsInJvbGUiOiJndWVzdCIsImlhdCI6MTc0MjA2OTI3NiwiZXhwIjoxNzQyMTU1Njc2fQ.UP6cdHfT3DrPJtkP-SJVpL4df90jLKSHVPpLAKUSx7g",
+    "token": "<token de invitación>",
     "password": "passwordSeguro123"
 }
