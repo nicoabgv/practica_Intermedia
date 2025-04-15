@@ -196,3 +196,79 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWVhNjVjN
 ### PATCH http://localhost:3000/api/projects/<ID_DEL_PROYECTO>/recover
 PATCH http://localhost:3000/api/projects/67eea6f9550f81f67973425b/recover
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWVhNjVjNTUwZjgxZjY3OTczNDIzYyIsImlhdCI6MTc0MzY5MzQzMiwiZXhwIjoxNzQzNjk3MDMyfQ.XCZyrg6ovzIRIpPsb9yzkdtSU7ETk122Dyefu65R9l4
+
+################################################################################
+# Endpoints de Albaranes
+################################################################################
+
+### Crear Albarán (horas)
+POST http://localhost:3000/api/delivery-notes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWUzYzQ1ODZjOGI1NTg0OGE3MGE4ZSIsImlhdCI6MTc0MzY2NjI0NSwiZXhwIjoxNzQzNjY5ODQ1fQ.KwulyPnDVd09w8TCLYAuXJLXkgNbR-eqoQkuE-7Ufps
+
+{
+  "type": "hours",
+  "project": "67ee3d7a8e2dc2a6a722a108",
+  "persons": [
+    { "name": "Técnico 1", "hours": 5 },
+    { "name": "Técnico 2", "hours": 3 }
+  ]
+}
+
+### Crear Albarán (materiales)
+POST http://localhost:3000/api/delivery-notes
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "type": "materials",
+  "project": "<ID_DEL_PROYECTO>",
+  "materials": [
+    { "name": "Cemento", "quantity": 10 },
+    { "name": "Ladrillos", "quantity": 200 }
+  ]
+}
+
+### Crear Albarán (mixto)
+POST http://localhost:3000/api/delivery-notes
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "type": "mixed",
+  "project": "<ID_DEL_PROYECTO>",
+  "persons": [
+    { "name": "Técnico 1", "hours": 4 }
+  ],
+  "materials": [
+    { "name": "Hormigón", "quantity": 5 }
+  ]
+}
+
+### Obtener todos los Albaranes
+GET http://localhost:3000/api/delivery-notes
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWUzYzQ1ODZjOGI1NTg0OGE3MGE4ZSIsImlhdCI6MTc0MzY2NjI0NSwiZXhwIjoxNzQzNjY5ODQ1fQ.KwulyPnDVd09w8TCLYAuXJLXkgNbR-eqoQkuE-7Ufps
+
+### Obtener un Albarán por ID
+GET http://localhost:3000/api/delivery-notes/67ee3e3c8e2dc2a6a722a117
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWUzYzQ1ODZjOGI1NTg0OGE3MGE4ZSIsImlhdCI6MTc0MzY2NjI0NSwiZXhwIjoxNzQzNjY5ODQ1fQ.KwulyPnDVd09w8TCLYAuXJLXkgNbR-eqoQkuE-7Ufps
+
+### Borrar un Albarán (solo si no está firmado)
+DELETE http://localhost:3000/api/delivery-notes/<id_del_albarán>
+Authorization: Bearer <token>
+
+### Firmar un albarán (subir imagen)
+PATCH http://localhost:3000/api/delivery-notes/67ee3e3c8e2dc2a6a722a117/sign
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWUzYzQ1ODZjOGI1NTg0OGE3MGE4ZSIsImlhdCI6MTc0MzY2NjI0NSwiZXhwIjoxNzQzNjY5ODQ1fQ.KwulyPnDVd09w8TCLYAuXJLXkgNbR-eqoQkuE-7Ufps
+Content-Type: multipart/form-data; boundary=boundary123
+
+--boundary123
+Content-Disposition: form-data; name="signature"; filename="firma.png"
+Content-Type: image/png
+
+< ./firma.png
+--boundary123--
+
+### Descargar PDF de un Albarán
+GET http://localhost:3000/api/delivery-notes/pdf/67ee3e3c8e2dc2a6a722a117
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWUzYzQ1ODZjOGI1NTg0OGE3MGE4ZSIsImlhdCI6MTc0MzY2NjI0NSwiZXhwIjoxNzQzNjY5ODQ1fQ.KwulyPnDVd09w8TCLYAuXJLXkgNbR-eqoQkuE-7Ufps
