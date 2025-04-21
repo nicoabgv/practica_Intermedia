@@ -9,7 +9,7 @@ const createClient = async (req, res) => {
 
     const alreadyExists = await ClientModel.findOne({
       name: body.name,
-      $or: [{ user: user._id }, { company: user.company }],
+      $or: [{ user: user._id }, { company: user.companyInfo }],
     });
 
     if (alreadyExists) return handleHttpError(res, "CLIENT_ALREADY_EXISTS", 409);
@@ -17,7 +17,7 @@ const createClient = async (req, res) => {
     const data = await ClientModel.create({
       ...body,
       user: user._id,
-      company: user.company || null,
+      company: user.companyInfo?.name || null,
     });
 
     res.status(201).send(data);
@@ -30,7 +30,7 @@ const getClients = async (req, res) => {
   try {
     const user = req.user;
     const clients = await ClientModel.find({
-      $or: [{ user: user._id }, { company: user.company }],
+      $or: [{ user: user._id }, { company: user.companyInfo }],
     });
     res.send(clients);
   } catch (e) {
@@ -44,7 +44,7 @@ const getClient = async (req, res) => {
     const user = req.user;
     const client = await ClientModel.findOne({
       _id: id,
-      $or: [{ user: user._id }, { company: user.company }],
+      $or: [{ user: user._id }, { company: user.companyInfo }],
     });
     if (!client) return handleHttpError(res, "CLIENT_NOT_FOUND", 404);
     res.send(client);
@@ -74,18 +74,24 @@ const updateClient = async (req, res) => {
 const deleteClient = async (req, res) => {
   try {
     const { id } = matchedData(req);
+    const { type } = req.query;
     const user = req.user;
-    const soft = req.query.soft !== "false";
 
     const client = await ClientModel.findOne({
       _id: id,
-      $or: [{ user: user._id }, { company: user.company }],
+      $or: [{ user: user._id }, { company: user.company }]
     });
 
     if (!client) return handleHttpError(res, "CLIENT_NOT_FOUND", 404);
 
-    const result = soft ? await client.delete() : await client.remove();
-    res.send({ deleted: true, soft });
+    if (type === "hard") {
+      await ClientModel.deleteOne({ _id: id });
+      return res.send({ deleted: true, type: "hard" });
+    }
+
+    await client.delete();
+    res.send({ deleted: true, type: "soft" });
+
   } catch (e) {
     handleHttpError(res, "ERROR_DELETE_CLIENT");
   }
@@ -96,7 +102,7 @@ const getArchivedClients = async (req, res) => {
     const user = req.user;
     const clients = await ClientModel.findWithDeleted({
       deleted: true,
-      $or: [{ user: user._id }, { company: user.company }],
+      $or: [{ user: user._id }, { company: user.companyInfo }],
     });
     res.send(clients);
   } catch (e) {
@@ -112,7 +118,7 @@ const restoreClient = async (req, res) => {
     const client = await ClientModel.findOneWithDeleted({
       _id: id,
       deleted: true,
-      $or: [{ user: user._id }, { company: user.company }],
+      $or: [{ user: user._id }, { company: user.companyInfo }],
     });
 
     if (!client) return handleHttpError(res, "CLIENT_NOT_FOUND", 404);

@@ -1,24 +1,18 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const connectDB = require('./config/database');
-const userRoutes = require('./routes/userRoutes');
-const storageRoutes = require("./routes/storageRoutes");
-
-dotenv.config();
-
-connectDB();
-
-const app = express();
-
-app.use(express.json());
-app.use('/api/users', userRoutes);
-app.use("/api/storage", storageRoutes);
-
-app.get('/', (req, res) => {
-  res.send('API funcionando correctamente 🚀');
-});
+// index.js
+require("dotenv").config();
+const app = require("./app");
+const connectDB = require("./config/database");
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+
+if (process.env.NODE_ENV !== "test") {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Servidor corriendo en el puerto ${PORT}`);
+    });
+  });
+} else {
+  connectDB(); // Solo conecta a la DB en test, sin levantar el servidor
+}
+
+module.exports = { app };
