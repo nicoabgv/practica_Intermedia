@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { sendEmail } = require('../utils/handleMails');
 
 exports.registerUser = async (req, res) => {
   const { email, password } = req.body;
@@ -26,6 +27,13 @@ exports.registerUser = async (req, res) => {
   });
 
   await newUser.save();
+
+  await sendEmail({
+    from: process.env.EMAIL,
+    to: newUser.email,
+    subject: "Verifica tu correo",
+    text: `Tu código de verificación es: ${verificationCode}`,
+  });
 
   // Token para validar el correo, o simplemente mantener sesión inicial
   const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -248,6 +256,13 @@ exports.requestPasswordReset = async (req, res) => {
     user.resetCodeExpires = Date.now() + 3600000;
     await user.save();
 
+    await sendEmail({
+        from: process.env.EMAIL,
+        to: user.email,
+        subject: "Código de recuperación de contraseña",
+        text: `Tu código para recuperar tu contraseña es: ${resetCode}`,
+      });
+
     res.status(200).json({
         message: 'Código de recuperación generado correctamente',
         resetCode
@@ -308,6 +323,13 @@ exports.inviteUser = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
+
+        await sendEmail({
+            from: process.env.EMAIL,
+            to: email,
+            subject: "Invitación a la plataforma",
+            text: `Has sido invitado a unirte. Regístrate usando este enlace: http://tusitio.com/register?token=${inviteToken}`,
+          });
 
         res.status(200).json({
             message: 'Invitación generada correctamente',

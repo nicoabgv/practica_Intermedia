@@ -1,4 +1,4 @@
-const { check } = require("express-validator");
+const { check, param } = require("express-validator");
 const validateResults = require("../utils/handleValidator");
 
 const validatorCreateClient = [
@@ -10,12 +10,22 @@ const validatorCreateClient = [
   (req, res, next) => validateResults(req, res, next),
 ];
 
+const validatorUpdateClient = [
+  check("phone").optional().isMobilePhone("es-ES"),
+  check("email").optional().isEmail(),
+  check("address").optional().isString(),
+  check("name").optional().isString(),
+  check("nif").optional().isString(),
+  (req, res, next) => validateResults(req, res, next),
+];
+
 const validatorId = [
-  check("id").exists().isMongoId().withMessage("ID no válido"),
+  param("id").exists().isMongoId().withMessage("ID no válido"),
   (req, res, next) => validateResults(req, res, next),
 ];
 
 module.exports = {
   validatorCreateClient,
+  validatorUpdateClient,
   validatorId,
 };

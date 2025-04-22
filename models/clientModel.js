@@ -8,11 +8,12 @@ const ClientSchema = new mongoose.Schema(
     email: { type: String },
     phone: { type: String },
     address: { type: String },
-    company: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
+    company: { type: String },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
   },
   { timestamps: true }
 );
 
 ClientSchema.plugin(mongooseDelete, { overrideMethods: "all", deletedAt: true });
+
 module.exports = mongoose.model("clients", ClientSchema);

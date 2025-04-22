@@ -197,6 +197,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWVhNjVjN
 PATCH http://localhost:3000/api/projects/67eea6f9550f81f67973425b/recover
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWVhNjVjNTUwZjgxZjY3OTczNDIzYyIsImlhdCI6MTc0MzY5MzQzMiwiZXhwIjoxNzQzNjk3MDMyfQ.XCZyrg6ovzIRIpPsb9yzkdtSU7ETk122Dyefu65R9l4
 
+
 ################################################################################
 # Endpoints de Albaranes
 ################################################################################
@@ -228,6 +229,7 @@ Authorization: Bearer <token>
     { "name": "Ladrillos", "quantity": 200 }
   ]
 }
+
 
 ### Crear Albarán (mixto)
 POST http://localhost:3000/api/delivery-notes
