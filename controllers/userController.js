@@ -50,40 +50,40 @@ exports.registerUser = async (req, res) => {
 };
 
 exports.validateEmail = async (req, res) => {
-  const { code } = req.body;
-  const token = req.headers.authorization?.split(' ')[1];
-
-  if (!token) {
+    const { code } = req.body;
+    const token = req.headers.authorization?.split(' ')[1];
+  
+    if (!token) {
       return res.status(401).json({ error: 'Token no proporcionado' });
-  }
-
-  if (!code || !/^\d{6}$/.test(code)) {
+    }
+  
+    if (!code || !/^\d{6}$/.test(code)) {
       return res.status(400).json({ error: 'Código de verificación inválido' });
-  }
-
-  try {
+    }
+  
+    try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id);
-
+  
       if (!user) {
-          return res.status(404).json({ error: 'Usuario no encontrado' });
+        return res.status(404).json({ error: 'Usuario no encontrado' });
       }
-
-      if (user.isVerified) {
-          return res.status(400).json({ error: 'El correo ya ha sido verificado' });
-      }
-
+  
       if (user.verificationCode !== code) {
-          return res.status(400).json({ error: 'Código incorrecto' });
+        return res.status(400).json({ error: 'Código incorrecto' });
       }
-
+  
+      if (user.isVerified) {
+        return res.status(400).json({ error: 'El correo ya ha sido verificado' });
+      }
+  
       user.isVerified = true;
       await user.save();
-
+  
       res.status(200).json({ message: 'Correo verificado correctamente' });
-  } catch (error) {
+    } catch (error) {
       res.status(401).json({ error: 'Token inválido o expirado' });
-  }
+    }
 };
 
 exports.loginUser = async (req, res) => {
