@@ -141,8 +141,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWVhNjVjN
 DELETE http://localhost:3000/api/clients/67eea04b02d65eb84661d00c
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWVhNjVjNTUwZjgxZjY3OTczNDIzYyIsImlhdCI6MTc0MzY5MzQzMiwiZXhwIjoxNzQzNjk3MDMyfQ.XCZyrg6ovzIRIpPsb9yzkdtSU7ETk122Dyefu65R9l4
 
+### Restaurar Cliente
+PATCH http://localhost:3000/api/clients/67eea6df550f81f679734257/recover
+Authorization: Bearer <token>
+
 ### Hard Delete Cliente
-DELETE http://localhost:3000/api/clients/67eea6df550f81f679734257?type=hard
+DELETE http://localhost:3000/api/clients/67eea6df55GIT_AUTHOR_DATE="2025-05-01T12:00:00" GIT_COMMITTER_DATE="2025-05-01T12:00:00" git commit -am "test: añadir endpoint de restaurar cliente"0f81f679734257?type=hard
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWVhNjVjNTUwZjgxZjY3OTczNDIzYyIsImlhdCI6MTc0MzY5MzQzMiwiZXhwIjoxNzQzNjk3MDMyfQ.XCZyrg6ovzIRIpPsb9yzkdtSU7ETk122Dyefu65R9l4
 
 ################################################################################
