@@ -11,6 +11,9 @@
     "type": "git",
     "url": "git+https://github.com/nicoabgv/practica_Intermedia.git"
   },
+  "jest": {
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"]
+    },
   "keywords": [],
   "author": "",
   "license": "ISC",
