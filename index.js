@@ -5,14 +5,16 @@ const connectDB = require("./config/database");
 
 const PORT = process.env.PORT || 3000;
 
+let server;
+
 if (process.env.NODE_ENV !== "test") {
   connectDB().then(() => {
-    app.listen(PORT, () => {
+    server = app.listen(PORT, () => {
       console.log(`Servidor corriendo en el puerto ${PORT}`);
     });
   });
 } else {
-  connectDB(); // Solo conecta a la DB en test, sin levantar el servidor
+  connectDB();
 }
 
-module.exports = { app };
+module.exports = { app, server };
