@@ -8,6 +8,10 @@ global.console = {
   error: jest.fn(),
 };
 
+jest.mock("./utils/handleMails", () => ({
+  sendEmail: jest.fn().mockResolvedValue(true)
+}));
+
 afterAll(async () => {
   await mongoose.disconnect();
   if (server && server.close) server.close();

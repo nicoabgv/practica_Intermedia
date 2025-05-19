@@ -27,6 +27,37 @@ router.use(authMiddleware);
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Client:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         nif:
+ *           type: string
+ *         email:
+ *           type: string
+ *         phone:
+ *           type: string
+ *         address:
+ *           type: string
+ *         company:
+ *           type: string
+ *         user:
+ *           type: string
+ *         deleted:
+ *           type: boolean
+ *         createdAt:
+ *           type: string
+ *         updatedAt:
+ *           type: string
+ */
+
+/**
+ * @swagger
  * /api/clients:
  *   get:
  *     summary: Obtener todos los clientes del usuario
@@ -36,66 +67,14 @@ router.use(authMiddleware);
  *     responses:
  *       200:
  *         description: Lista de clientes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Client'
  */
 router.get("/", getClients);
-
-/**
- * @swagger
- * /api/clients/archived:
- *   get:
- *     summary: Obtener clientes archivados
- *     tags: [Clientes]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Lista de clientes archivados
- */
-router.get("/archived", getArchivedClients);
-
-/**
- * @swagger
- * /api/clients/{id}:
- *   get:
- *     summary: Obtener un cliente por ID
- *     tags: [Clientes]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: id
- *         in: path
- *         description: ID del cliente
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Cliente encontrado
- *       404:
- *         description: Cliente no encontrado
- */
-router.get("/:id", validatorId, getClient);
-
-/**
- * @swagger
- * /api/clients/{id}:
- *   delete:
- *     summary: Eliminar cliente (soft delete)
- *     tags: [Clientes]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: id
- *         in: path
- *         description: ID del cliente
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Cliente eliminado
- */
-router.delete("/:id", validatorId, deleteClient);
 
 /**
  * @swagger
@@ -110,10 +89,7 @@ router.delete("/:id", validatorId, deleteClient);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - name
- *               - email
+ *             required: [name, email]
  *             properties:
  *               name:
  *                 type: string
@@ -127,44 +103,76 @@ router.delete("/:id", validatorId, deleteClient);
  *                 type: string
  *     responses:
  *       201:
- *         description: Cliente creado
+ *         description: Cliente creado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Client'
+ *       409:
+ *         description: Ya existe un cliente con ese nombre
  */
 router.post("/", validatorCreateClient, createClient);
 
 /**
  * @swagger
- * /api/clients/{id}/recover:
- *   patch:
- *     summary: Restaurar un cliente eliminado
+ * /api/clients/archived:
+ *   get:
+ *     summary: Obtener clientes archivados
+ *     tags: [Clientes]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de clientes archivados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Client'
+ */
+router.get("/archived", getArchivedClients);
+
+/**
+ * @swagger
+ * /api/clients/{id}:
+ *   get:
+ *     summary: Obtener un cliente por ID
  *     tags: [Clientes]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: id
- *         in: path
- *         description: ID del cliente a restaurar
+ *       - in: path
+ *         name: id
  *         required: true
+ *         description: ID del cliente
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Cliente restaurado
+ *         description: Cliente encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Client'
+ *       404:
+ *         description: Cliente no encontrado
  */
-router.patch("/:id/recover", validatorId, restoreClient);
+router.get("/:id", validatorId, getClient);
 
 /**
  * @swagger
  * /api/clients/{id}:
  *   put:
- *     summary: Actualizar un cliente
+ *     summary: Actualizar un cliente existente
  *     tags: [Clientes]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: id
- *         in: path
- *         description: ID del cliente
+ *       - in: path
+ *         name: id
  *         required: true
+ *         description: ID del cliente
  *         schema:
  *           type: string
  *     requestBody:
@@ -172,7 +180,6 @@ router.patch("/:id/recover", validatorId, restoreClient);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
  *             properties:
  *               name:
  *                 type: string
@@ -186,8 +193,67 @@ router.patch("/:id/recover", validatorId, restoreClient);
  *                 type: string
  *     responses:
  *       200:
- *         description: Cliente actualizado
+ *         description: Cliente actualizado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Client'
+ *       404:
+ *         description: Cliente no encontrado
  */
 router.put("/:id", validatorId, validatorUpdateClient, updateClient);
+
+/**
+ * @swagger
+ * /api/clients/{id}:
+ *   delete:
+ *     summary: Eliminar un cliente (soft o hard delete)
+ *     tags: [Clientes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del cliente
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: type
+ *         required: false
+ *         description: Tipo de borrado (hard para borrado permanente)
+ *         schema:
+ *           type: string
+ *           enum: [hard]
+ *     responses:
+ *       200:
+ *         description: Cliente eliminado
+ *       404:
+ *         description: Cliente no encontrado
+ */
+router.delete("/:id", validatorId, deleteClient);
+
+/**
+ * @swagger
+ * /api/clients/{id}/recover:
+ *   patch:
+ *     summary: Restaurar un cliente archivado
+ *     tags: [Clientes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del cliente a restaurar
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Cliente restaurado correctamente
+ *       404:
+ *         description: Cliente no encontrado
+ */
+router.patch("/:id/recover", validatorId, restoreClient);
 
 module.exports = router;

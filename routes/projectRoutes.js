@@ -16,6 +16,8 @@ const {
   restoreProject,
 } = require("../controllers/projectController");
 
+router.use(authMiddleware);
+
 /**
  * @swagger
  * tags:
@@ -23,7 +25,32 @@ const {
  *   description: Endpoints para la gestión de proyectos
  */
 
-router.use(authMiddleware);
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Project:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         client:
+ *           type: string
+ *         user:
+ *           type: string
+ *         company:
+ *           type: string
+ *         deleted:
+ *           type: boolean
+ *         createdAt:
+ *           type: string
+ *         updatedAt:
+ *           type: string
+ */
 
 /**
  * @swagger
@@ -64,8 +91,8 @@ router.get("/archived", getArchivedProjects);
  *     parameters:
  *       - name: id
  *         in: path
- *         required: true
  *         description: ID del proyecto
+ *         required: true
  *         schema:
  *           type: string
  *     responses:
@@ -75,27 +102,6 @@ router.get("/archived", getArchivedProjects);
  *         description: Proyecto no encontrado
  */
 router.get("/:id", validatorId, getProject);
-
-/**
- * @swagger
- * /api/projects/{id}:
- *   delete:
- *     summary: Eliminar un proyecto (soft delete)
- *     tags: [Proyectos]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: id
- *         in: path
- *         description: ID del proyecto
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Proyecto eliminado
- */
-router.delete("/:id", validatorId, deleteProject);
 
 /**
  * @swagger
@@ -117,8 +123,10 @@ router.delete("/:id", validatorId, deleteProject);
  *             properties:
  *               name:
  *                 type: string
+ *                 description: Nombre del proyecto
  *               description:
  *                 type: string
+ *                 description: Descripción del proyecto
  *               client:
  *                 type: string
  *                 description: ID del cliente asociado
@@ -130,30 +138,9 @@ router.post("/", validatorCreateProject, createProject);
 
 /**
  * @swagger
- * /api/projects/{id}/recover:
- *   patch:
- *     summary: Restaurar un proyecto archivado
- *     tags: [Proyectos]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: id
- *         in: path
- *         description: ID del proyecto
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Proyecto restaurado
- */
-router.patch("/:id/recover", validatorId, restoreProject);
-
-/**
- * @swagger
  * /api/projects/{id}:
  *   put:
- *     summary: Actualizar un proyecto
+ *     summary: Actualizar un proyecto existente
  *     tags: [Proyectos]
  *     security:
  *       - bearerAuth: []
@@ -173,14 +160,71 @@ router.patch("/:id/recover", validatorId, restoreProject);
  *             properties:
  *               name:
  *                 type: string
+ *                 description: Nombre del proyecto
  *               description:
  *                 type: string
+ *                 description: Descripción del proyecto
  *               client:
  *                 type: string
+ *                 description: ID del cliente asociado
  *     responses:
  *       200:
  *         description: Proyecto actualizado
+ *       404:
+ *         description: Proyecto no encontrado
  */
-router.put("/:id", validatorUpdateProject, updateProject);
+router.put("/:id", validatorId, validatorUpdateProject, updateProject);
+
+/**
+ * @swagger
+ * /api/projects/{id}:
+ *   delete:
+ *     summary: Eliminar un proyecto (soft delete o hard delete con query)
+ *     tags: [Proyectos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID del proyecto
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: type
+ *         in: query
+ *         description: Tipo de borrado (soft por defecto, "hard" para permanente)
+ *         schema:
+ *           type: string
+ *           enum: [soft, hard]
+ *     responses:
+ *       200:
+ *         description: Proyecto eliminado
+ *       404:
+ *         description: Proyecto no encontrado
+ */
+router.delete("/:id", validatorId, deleteProject);
+
+/**
+ * @swagger
+ * /api/projects/{id}/recover:
+ *   patch:
+ *     summary: Restaurar un proyecto archivado (soft delete)
+ *     tags: [Proyectos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID del proyecto
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Proyecto restaurado
+ *       404:
+ *         description: Proyecto no encontrado o no archivado
+ */
+router.patch("/:id/recover", validatorId, restoreProject);
 
 module.exports = router;

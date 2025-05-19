@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   loginUser,
   deleteUser,
+  restoreUser,
   registerUser,
   validateEmail,
   getUserProfile,
@@ -20,6 +21,47 @@ const {
  * tags:
  *   name: Usuarios
  *   description: Endpoints relacionados con usuarios, autenticación y onboarding
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         email:
+ *           type: string
+ *         role:
+ *           type: string
+ *         isVerified:
+ *           type: boolean
+ *         isActive:
+ *           type: boolean
+ *         personalInfo:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             nif:
+ *               type: string
+ *         companyInfo:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *             cif:
+ *               type: string
+ *             address:
+ *               type: string
+ *         createdAt:
+ *           type: string
+ *         updatedAt:
+ *           type: string
  */
 
 /**
@@ -277,5 +319,25 @@ router.put('/onboarding/personal-info', updatePersonalInfo);
  *         description: Código de recuperación enviado al correo
  */
 router.post('/request-password-reset', requestPasswordReset);
+
+/**
+ * @swagger
+ * /api/users/restore:
+ *   patch:
+ *     summary: Restaurar un usuario que fue desactivado (soft delete)
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Usuario restaurado correctamente
+ *       400:
+ *         description: El usuario ya está activo
+ *       401:
+ *         description: Token inválido o no proporcionado
+ *       404:
+ *         description: Usuario no encontrado
+ */
+router.patch('/restore', restoreUser);
 
 module.exports = router;
